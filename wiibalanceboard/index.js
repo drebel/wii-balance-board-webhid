@@ -1,4 +1,4 @@
-import WIIBalanceBoard from "/src/wiibalanceboard.js";
+import WIIBalanceBoard from "./src/wiibalanceboard.js";
 
 let requestButton = document.getElementById("request-hid-device");
 
