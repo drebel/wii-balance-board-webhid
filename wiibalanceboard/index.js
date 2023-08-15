@@ -41,37 +41,60 @@ function initButtons() {
 }
 
 function initCanvas() {
-  wiibalanceboard.BtnListener = buttons => {
-    var buttonJSON = JSON.stringify(buttons, null, 2);
+  // wiibalanceboard.BtnListener = buttons => {
+  //   var buttonJSON = JSON.stringify(buttons, null, 2);
 
-    if (document.getElementById("buttons").innerHTML != buttonJSON) {
-      document.getElementById("buttons").innerHTML = buttonJSON;
-    }
-  };
+  //   if (document.getElementById("buttons").innerHTML != buttonJSON) {
+  //     document.getElementById("buttons").innerHTML = buttonJSON;
+  //   }
+  // };
 
   wiibalanceboard.WeightListener = weights => {
-    var weightsJSON = JSON.stringify(
-      weights,
-      (key, value) => {
-        return value.toFixed ? Number(value.toFixed(3)) : value;
-      },
-      2
-    );
+    let totalWeight = weights.TOP_RIGHT + weights.BOTTOM_RIGHT + weights.TOP_LEFT + weights.BOTTOM_LEFT
 
-    if (document.getElementById("weights").innerHTML != weightsJSON) {
-      document.getElementById("weights").innerHTML = weightsJSON;
+    let xValue = (1 + ((weights.TOP_RIGHT + weights.BOTTOM_RIGHT) - (weights.TOP_LEFT + weights.BOTTOM_LEFT)) / (totalWeight)) * (416)
+
+    let yValue = (1 + ((weights.BOTTOM_RIGHT + weights.BOTTOM_LEFT) - (weights.TOP_RIGHT + weights.TOP_LEFT)) / (totalWeight)) * (268)
+
+
+    // var weightsJSON = JSON.stringify(
+    //   weights,
+    //   (key, value) => {
+    //     return value.toFixed ? Number(value.toFixed(3)) : value;
+    //   },
+    //   2
+    // );
+
+    // if (document.getElementById("weights").innerHTML != weightsJSON) {
+    //   document.getElementById("weights").innerHTML = weightsJSON;
+    // }
+    
+    // for (let position in weights) {
+    //   const weight = weights[position];
+    //   document.getElementById(position).style.backgroundColor = `rgba(38, 194, 129, ${weight/40})`;
+    //   // document.getElementById(position).style.opacity = weight/40;
+    //   document.getElementById(position).innerHTML = weight
+    // }
+
+    // document.getElementById('fakecanvas').innerHTML = `${xValue} ${yValue}`
+
+    
+    const canvas = document.getElementById('canvas')
+
+    if(canvas.getContext){
+        const ctx = canvas.getContext('2d')
+        ctx.strokeRect(xValue,yValue,5,5)
+
     }
     
-    for (let position in weights) {
-      const weight = weights[position];
-      document.getElementById(position).style.opacity = weight / 40;
-    }
   };
 }
 
 function enableControls() {
   document.getElementById("Controls").classList.remove("hidden");
   document.getElementById("WeightsViz").classList.remove("hidden");
+  document.getElementById("fakecanvas").classList.remove("hidden");
+  document.getElementById("canvasholder").classList.remove("hidden");
   document.getElementById("instructions").classList.add("hidden");
 }
 
