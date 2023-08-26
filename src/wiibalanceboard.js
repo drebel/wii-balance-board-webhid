@@ -27,6 +27,7 @@ export default class WIIBalanceBoard extends WIIMote {
       [10000.0, 10000.0, 10000.0, 10000.0],
       [10000.0, 10000.0, 10000.0, 10000.0]
     ];
+    this.eventData = []
   }
 
   // Initiliase the Wiimote
@@ -65,6 +66,7 @@ export default class WIIBalanceBoard extends WIIMote {
   WeightDecoder(data) {
     const weights = [0, 1, 2, 3].map(i => {
       const raw = data.getUint16(2 + 2 * i, false);
+      // console.log(raw)
       //return raw;
       if (raw < this.calibration[0][i]) {
         return 0;
@@ -97,6 +99,8 @@ export default class WIIBalanceBoard extends WIIMote {
   // main listener received input from the Wiimote
   listener(event) {
     var { data } = event;
+    var { timeStamp } = event;
+    // console.log(data, timeStamp)
 
     switch (event.reportId) {
       case InputReport.STATUS:
@@ -111,10 +115,12 @@ export default class WIIBalanceBoard extends WIIMote {
         // weight data
 
         // button data
-        this.BTNDecoder(...[0, 1].map(i => data.getUint8(i)));
+        // this.BTNDecoder(...[0, 1].map(i => data.getUint8(i)));
+        console.log(data)
 
         // raw weight data
-        this.WeightDecoder(data);
+        // this.WeightDecoder(data);
+        // this.eventData.push([timeStamp, data])
 
         // weight listener
         break;
