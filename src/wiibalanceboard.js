@@ -21,13 +21,20 @@ export default class WIIBalanceBoard extends WIIMote {
       TOP_LEFT: 2,
       BOTTOM_LEFT: 3,
     };
-
-    this.calibration = [
-      [10000.0, 10000.0, 10000.0, 10000.0],
-      [10000.0, 10000.0, 10000.0, 10000.0],
-      [10000.0, 10000.0, 10000.0, 10000.0]
-    ];
+      // calibration info = [
+      // [TOP_RIGHT 0kg, BOTTOM_RIGHT 0kg, TOP_LEFT 0kg, BOTTOM_LEFT 0kg]
+      // [TOP_RIGHT 17kg, BOTTOM_RIGHT 17kg, TOP_LEFT 17kg, BOTTOM_LEFT 17kg]
+      // [TOP_RIGHT 34kg, BOTTOM_RIGHT 34kg, TOP_LEFT 34kg, BOTTOM_LEFT 34kg]
+      // ]
+      this.calibration = [
+        [10000.0, 10000.0, 10000.0, 10000.0],
+        [10000.0, 10000.0, 10000.0, 10000.0],
+        [10000.0, 10000.0, 10000.0, 10000.0]
+      ];
     this.eventData = []
+    this.isRecording = false
+    this.isTare = false
+    this.tareData = []
   }
 
   // Initiliase the Wiimote
@@ -85,22 +92,32 @@ export default class WIIBalanceBoard extends WIIMote {
         );
       }
     });
-    
-    for (let position in WiiBalanceBoardPositions) {
-      const index = WiiBalanceBoardPositions[position];
-      this.weights[position] = weights[index];
-    }
-        
-    if (this.WeightListener) {
-      this.WeightListener(this.weights);
-    }
+  }
+
+  TareDecoder(data) {
+    const sensorValues = [0, 1, 2, 3].map(i => {
+      const raw = data.getUint16(2 + 2 * i, false);
+      // console.log(raw)
+      return raw;
+    });
+    this.tareData.push(sensorValues)
+  }
+
+  Tare(tareData){
+    // map thru array then reduce each one to find average
+    // or maybe we find max, well try both and figure out which one feels better
+    // go thru first array in calibration matrix and replace calibration values respectively
   }
 
   // main listener received input from the Wiimote
   listener(event) {
+    // console.log(this.calibration)
+
     var { data } = event;
     var { timeStamp } = event;
     // console.log(data, timeStamp)
+    // console.log(event)
+
 
     switch (event.reportId) {
       case InputReport.STATUS:
@@ -112,17 +129,27 @@ export default class WIIBalanceBoard extends WIIMote {
         this.WeightCalibrationDecoder(data);
         break;
       case DataReportMode.EXTENSION_8BYTES:
-        // weight data
+        //have if statement to figure out what to do with data depending on using input
+        if(this.isRecording){
+          this.eventData.push([timeStamp, data])
+        }else if(this.isTare){
+          this.TareDecoder(data)
+        } else {
+          this.WeightDecoder(data)
+        }
 
-        // button data
-        // this.BTNDecoder(...[0, 1].map(i => data.getUint8(i)));
-        console.log(data)
+        // have an is recording boolean
+        // if true records timestamps and data to array to be analyzed later
 
-        // raw weight data
-        // this.WeightDecoder(data);
-        // this.eventData.push([timeStamp, data])
+        // if tare is true
+        // collect data for 5 sec then turn back to false
+        // take the greatest value or maybe the average value?
+        // then change the calibration matrix [0] to the value for each sensor
 
-        // weight listener
+        // if low q live feed is clicked? 
+        // use the original weight decoder to show data on the canvas
+
+        // NOTE: need to make sure buttons cant be clicked while others are true, so need to be toggling them together or setting them explicitly. 
         break;
       default:
         console.log(`event of unused report id ${event.reportId}`);
