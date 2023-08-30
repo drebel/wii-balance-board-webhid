@@ -72,7 +72,7 @@ export default class WIIBalanceBoard extends WIIMote {
   }
 
   WeightDecoder(data) {
-    const weights = [0, 1, 2, 3].map(i => {
+    return [0, 1, 2, 3].map(i => {
       const raw = data.getUint16(2 + 2 * i, false);
       // console.log(raw)
       //return raw;
@@ -95,6 +95,10 @@ export default class WIIBalanceBoard extends WIIMote {
         );
       }
     });
+  }
+
+  WeightPlotter(data) {
+    let weight = this.WeightDecoder(data)
 
     for (let position in WiiBalanceBoardPositions) {
       const index = WiiBalanceBoardPositions[position];
@@ -131,10 +135,53 @@ export default class WIIBalanceBoard extends WIIMote {
   CalculateTime(){
     if(this.eventData.length){
       return this.eventData[this.eventData.length-1][0] - this.eventData[0][0]
-      // console.log(this.eventData[this.eventData.length-1][0], this.eventData[0][0])
     }else{
       console.log('sorry no data to analyze')
     }
+  }
+
+  CalculateCoordinates(){
+    // decode array buffer to get raw data for each sensor at each timestamp
+    // probably can just reuse weight decoder function
+    // take the raw data conver it to kg
+    // take the kg and from each sensor and height and width
+    // width = 433mm and height = 238mm per https://www.mdpi.com/1424-8220/14/10/18244
+    // ultimately want a log of timestamps and corresponding xy coordinates so we can plot
+
+    // this function is going to get a large array of arrays that holds the timestamp and array buffer
+    // the input will always be an array of arrays and will at least have 1 data point. could potentially have unlimited data poitns in it. maybe i should put a limit on the record button...
+    // input seconds will be in ms and could start at any number
+    // array buffer will be a buffer with bits for each sensor in a unsigned 8 bit array with the normal spots for each sensor
+
+    // the function will return an array of arrays, that are the xy coordinates and time stamps for each datapoint. x y coordinates will be in mm and time will be in s and start from 0s
+    // format will be an array [[]]
+
+    // [[1000, arraybuffer], [1001, arraybuffer], [1002, arraybuffer]] returns
+    // [[0, 0, 0], [1, 1, 2], [2, 2, 3]]
+
+    // function takes in the eventdata array
+    // we will map thru each element, and call weight decoder on the second element of the array to get the array buffer data
+    // this will return an array holding the raw sensor values as kg
+    // add up the kg, and then calculate x and y values using the total weight, and combinations of each sensor weight
+    // multiply the value by width or height in mm
+    // return an array with [s, x, y] elements
+    // return the mapped array 
+    let initialTime = this.eventData[0][0]
+    let xyCoordinates = this.eventData.map(point => {
+      let weights = this.WeightDecoder(point[1])
+
+      let totalWeight = weights.reduce((acc, cv) => {
+        return acc += cv
+      },0)
+
+      let xValue = (1 + ((weights[0] + weights[1]) - (weights[2] + weights[3])) / (totalWeight)) * (416)
+
+      let yValue = (1 + ((weights[1] + weights[3]) - (weights[0] + weights[2])) / (totalWeight)) * (268)
+
+      return [(point[0] - initialTime) / 1000, xValue, yValue]
+    })
+    console.log(xyCoordinates)
+
   }
 
   // main listener received input from the Wiimote

@@ -79,6 +79,9 @@ tareButton.addEventListener('click', async () => {
 analyzeButton.addEventListener('click', () => {
   let time = wiibalanceboard.CalculateTime()
   document.getElementById('timeCell').innerText = time / 1000
+  // function to get coordinates with units to start to do more calculations on
+  // also figure out order to do SWARII on
+  wiibalanceboard.CalculateCoordinates()
 })
 
 deleteButton.addEventListener('click', () => {
