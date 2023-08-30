@@ -66,29 +66,17 @@ showDataButton.addEventListener('click', () => {
 })
 
 tareButton.addEventListener('click', async () => {
-  // turn isTare true for 5 s
-  // record raw scores into tareData
-  // turn isTare back to false
-  // find avg or max for each sensor
-  // change calibration matrix values
-
-  // console.log('true')
-  // setTimeout(() => {
-  //   console.log('false')
-  //   console.log('data')
-  // }, 5000);
- 
-
+  console.log('Initiating 5 second tare')
   wiibalanceboard.isTare = true
-  delay(5000)
+  await delay(5000)
   wiibalanceboard.isTare = false
   console.log(wiibalanceboard.tareData)
-  wiibalanceboard.Tare(wiibalanceboard.tareData)
-
+  console.log(wiibalanceboard.calibration)
+  wiibalanceboard.Tare()
 })
 
 deleteButton.addEventListener('click', () => {
-  
+  console.log(wiibalanceboard.tareData)
 })
 
 function delay(ms) {
@@ -99,6 +87,7 @@ function delay(ms) {
 function showLiveData() {
   wiibalanceboard.WeightListener = weights => {
     let totalWeight = weights.TOP_RIGHT + weights.BOTTOM_RIGHT + weights.TOP_LEFT + weights.BOTTOM_LEFT
+    // console.log(totalWeight)
 
     let xValue = (1 + ((weights.TOP_RIGHT + weights.BOTTOM_RIGHT) - (weights.TOP_LEFT + weights.BOTTOM_LEFT)) / (totalWeight)) * (416)
 
@@ -110,9 +99,10 @@ function showLiveData() {
 
 function enableControls() {
   document.getElementById("Controls").classList.remove("hidden");
-  document.getElementById("WeightsViz").classList.remove("hidden");
-  document.getElementById("fakecanvas").classList.remove("hidden");
+  // document.getElementById("WeightsViz").classList.remove("hidden");
+  // document.getElementById("fakecanvas").classList.remove("hidden");
   document.getElementById("canvasholder").classList.remove("hidden");
+  document.getElementById("stats").classList.remove("hidden");
   document.getElementById("instructions").classList.add("hidden");
 }
 

@@ -13,7 +13,7 @@ import WIIMote from "./wiimote.js";
 export default class WIIBalanceBoard extends WIIMote {
   constructor(device) {
     super(device);
-
+    
     this.WeightListener = null;
     this.weights = {
       TOP_RIGHT: 0,
@@ -21,7 +21,7 @@ export default class WIIBalanceBoard extends WIIMote {
       TOP_LEFT: 2,
       BOTTOM_LEFT: 3,
     };
-      // calibration info = [
+      // calibration breakpoints = [
       // [TOP_RIGHT 0kg, BOTTOM_RIGHT 0kg, TOP_LEFT 0kg, BOTTOM_LEFT 0kg]
       // [TOP_RIGHT 17kg, BOTTOM_RIGHT 17kg, TOP_LEFT 17kg, BOTTOM_LEFT 17kg]
       // [TOP_RIGHT 34kg, BOTTOM_RIGHT 34kg, TOP_LEFT 34kg, BOTTOM_LEFT 34kg]
@@ -34,7 +34,8 @@ export default class WIIBalanceBoard extends WIIMote {
     this.eventData = []
     this.isRecording = false
     this.isTare = false
-    this.tareData = []
+    this.tareData = [[], [], [], []]
+    this.newCalibration = [0,0,0,0]
   }
 
   // Initiliase the Wiimote
@@ -73,10 +74,12 @@ export default class WIIBalanceBoard extends WIIMote {
   WeightDecoder(data) {
     const weights = [0, 1, 2, 3].map(i => {
       const raw = data.getUint16(2 + 2 * i, false);
-      // console.log(raw)
+      console.log(raw)
       //return raw;
       if (raw < this.calibration[0][i]) {
         return 0;
+      // } else if (raw < this.newCalibration[i]) {
+      //   return 0
       } else if (raw < this.calibration[1][i]) {
         return (
           17 *
@@ -92,21 +95,37 @@ export default class WIIBalanceBoard extends WIIMote {
         );
       }
     });
+
+    for (let position in WiiBalanceBoardPositions) {
+      const index = WiiBalanceBoardPositions[position];
+      this.weights[position] = weights[index];
+    }
+        
+    if (this.WeightListener) {
+      this.WeightListener(this.weights);
+    }
   }
 
   TareDecoder(data) {
-    const sensorValues = [0, 1, 2, 3].map(i => {
-      const raw = data.getUint16(2 + 2 * i, false);
-      // console.log(raw)
-      return raw;
-    });
-    this.tareData.push(sensorValues)
+    for (let i = 0; i < 4; i++) {
+      this.tareData[i].push(data.getUint16(2 + 2 * i, false));
+    }
   }
 
-  Tare(tareData){
+  Tare(){
     // map thru array then reduce each one to find average
     // or maybe we find max, well try both and figure out which one feels better
     // go thru first array in calibration matrix and replace calibration values respectively
+    const newCalibration = this.tareData.map( i => {
+      return Math.max(...i) + 10
+
+      // let sum = i.reduce((acc, cv) => {
+      //  acc += cv
+      //  return acc
+      // }, 0)
+      // return sum / i.length
+    })
+    this.newCalibration = newCalibration
   }
 
   // main listener received input from the Wiimote
