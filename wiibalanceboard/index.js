@@ -7,6 +7,7 @@ let clearButton = document.getElementById('clearBtn')
 let recordButton = document.getElementById('recordBtn')
 let showDataButton = document.getElementById('showDataBtn')
 let tareButton = document.getElementById('tareBtn')
+let analyzeButton = document.getElementById('analyzeBtn')
 let deleteButton = document.getElementById('deleteBtn')
 
 var wiibalanceboard = undefined;
@@ -75,8 +76,13 @@ tareButton.addEventListener('click', async () => {
   wiibalanceboard.Tare()
 })
 
+analyzeButton.addEventListener('click', () => {
+  let time = wiibalanceboard.CalculateTime()
+  document.getElementById('timeCell').innerText = time / 1000
+})
+
 deleteButton.addEventListener('click', () => {
-  console.log(wiibalanceboard.tareData)
+  wiibalanceboard.eventData = []
 })
 
 function delay(ms) {

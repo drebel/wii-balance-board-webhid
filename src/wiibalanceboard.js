@@ -74,7 +74,7 @@ export default class WIIBalanceBoard extends WIIMote {
   WeightDecoder(data) {
     const weights = [0, 1, 2, 3].map(i => {
       const raw = data.getUint16(2 + 2 * i, false);
-      console.log(raw)
+      // console.log(raw)
       //return raw;
       if (raw < this.calibration[0][i]) {
         return 0;
@@ -126,6 +126,15 @@ export default class WIIBalanceBoard extends WIIMote {
       // return sum / i.length
     })
     this.newCalibration = newCalibration
+  }
+
+  CalculateTime(){
+    if(this.eventData.length){
+      return this.eventData[this.eventData.length-1][0] - this.eventData[0][0]
+      // console.log(this.eventData[this.eventData.length-1][0], this.eventData[0][0])
+    }else{
+      console.log('sorry no data to analyze')
+    }
   }
 
   // main listener received input from the Wiimote
