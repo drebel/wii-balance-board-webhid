@@ -25,32 +25,7 @@
     <div class="py-20 text-center text-black">
       <h1 class="text-4xl">Sway Plate</h1>
       <h2>
-        A Wii Balance Board implementation using
-        <a
-          class="text-blue-600 hover:text-blue-900 underline"
-          href="https://wicg.github.io/webhid/"
-          >WebHID API</a
-        >
-        by
-        <a
-          class="text-blue-600 hover:text-blue-900 underline"
-          href="https://twitter.com/KevinPicchi"
-          >@KevinPicchi</a
-        >
-        and
-        <a
-          class="text-blue-600 hover:text-blue-900 underline"
-          href="https://twitter.com/ConcreteSciFi"
-          >@ConcreteSciFi</a
-        >
-      </h2>
-      <h2>
-        Check the source code on
-        <a
-          class="text-blue-600 hover:text-blue-900 underline pb-20"
-          href="https://github.com/PicchiKevin/wiimote-webhid"
-          >Github</a
-        >
+        Center of Pressure Data on the web
       </h2>
     </div>
 
@@ -59,15 +34,20 @@
       class="max-w-4xl mx-auto px-8 py-4 bg-white dark:bg-gray-800 rounded-lg shadow-md"
     >
       <h1 class="my-4 font-big text-bold underline text-3xl">Step 1</h1>
-      <p class="my-2">
-        Enable WebHID (available from chrome 85 by enabling the flag
-        #enable-experimental-web-platform-features at chrome://flags)
-      </p>
-      <p class="my-2">
-        Then pair your Wii Balance Board on your computer using Bluetooth (tap
-        the sync button that is hidden next to the battery)
-      </p>
-      <p class="my-2">Click button bellow and have fun!</p>
+      <ol class="my-2">
+        <li>Open this site in a Chrome browser</li>
+        <li>Enter <code>chrome://flags</code> into your URL bar</li>
+        <li>Search for <code>#enable-experimental-web-platform-features</code></li>
+        <li>Enable <code>Experimental Web Platform features</code></li>
+        <li>Open a new finder window and go to <code>Control Panel\Hardware and Sound\Devices and Printers</code><br>
+          I usually get here by going to add a bluetooth device, scrolling down and then clicking <code>Devices and Printers</code><br>
+          Pairing the board the normal way you connect bluetooth devices will not work</li>
+        <li>Click <code>Add a Device</code> and click the red button next to the batteries on your Wii Balance Board</li>
+        <li>The board my appear as unnamed input device or named something like Nintendo RVL-WBC-01</li>
+        <li>You will be asked for a pin. Just click Next without entering anything. Do not click into the input box otherwise you will not be able to click Next.</li>
+        <li>Click button bellow and have fun!</li>
+      </ol>
+      
       <div class="flex justify-center items-center">
         <button
           id="request-hid-device"

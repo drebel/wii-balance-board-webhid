@@ -98,7 +98,8 @@ export default class WIIBalanceBoard extends WIIMote {
   }
 
   WeightPlotter(data) {
-    let weight = this.WeightDecoder(data)
+    // console.log(data)
+    let weights = this.WeightDecoder(data)
 
     for (let position in WiiBalanceBoardPositions) {
       const index = WiiBalanceBoardPositions[position];
@@ -174,15 +175,17 @@ export default class WIIBalanceBoard extends WIIMote {
         return acc += cv
       },0)
 
-      let xValue = (1 + ((weights[0] + weights[1]) - (weights[2] + weights[3])) / (totalWeight)) * (416)
+      let xValue = (((weights[0] + weights[1]) - (weights[2] + weights[3])) / totalWeight) * (433/2)
 
-      let yValue = (1 + ((weights[1] + weights[3]) - (weights[0] + weights[2])) / (totalWeight)) * (268)
+      let yValue = (((weights[1] + weights[3]) - (weights[0] + weights[2])) / totalWeight) * (238/2)
 
       return [(point[0] - initialTime) / 1000, xValue, yValue]
     })
     console.log(xyCoordinates)
 
   }
+
+  
 
   // main listener received input from the Wiimote
   listener(event) {
@@ -210,7 +213,7 @@ export default class WIIBalanceBoard extends WIIMote {
         }else if(this.isTare){
           this.TareDecoder(data)
         } else {
-          this.WeightDecoder(data)
+          this.WeightPlotter(data)
         }
 
         // have an is recording boolean
