@@ -36,6 +36,7 @@ export default class WIIBalanceBoard extends WIIMote {
     this.isTare = false
     this.tareData = [[], [], [], []]
     this.newCalibration = [0,0,0,0]
+    this.xyCoordinates = []
   }
 
   // Initiliase the Wiimote
@@ -181,8 +182,30 @@ export default class WIIBalanceBoard extends WIIMote {
 
       return [(point[0] - initialTime) / 1000, xValue, yValue]
     })
-    console.log(xyCoordinates)
+    this.xyCoordinates = xyCoordinates
 
+  }
+
+  CalculatePathLength(){
+    // function doesnt take in any parameters
+    // function returns a number which is the path length of the xy data in mm
+
+    //take xycoordinate array
+    //declare pathlength var 
+    // loop thru it
+    // each loop do Math.sqrt((x[i+1]- x[i])^2 + y[i+1]- y[i])^2)
+    // then add result to pathlength
+    // return path length
+
+    let xyCoordinates = this.xyCoordinates
+    let pathLength = 0
+
+    for(let i = 0; i < xyCoordinates.length-1; i++){
+      // console.log(xyCoordinates[i+1][1],xyCoordinates[i][1],xyCoordinates[i+1][2],xyCoordinates[i][2])
+      let dist = Math.sqrt((xyCoordinates[i+1][1] - xyCoordinates[i][1])**2 + (xyCoordinates[i+1][2] - xyCoordinates[i][2])**2)
+      pathLength += dist
+    }
+    return pathLength
   }
 
   
