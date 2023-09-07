@@ -4,10 +4,10 @@ let requestButton = document.getElementById("request-hid-device");
 let toggleLiveDataButton = document.getElementById('startBtn')
 let clearButton = document.getElementById('clearBtn')
 let recordButton = document.getElementById('recordBtn')
-let showDataButton = document.getElementById('showDataBtn')
-let tareButton = document.getElementById('tareBtn')
+// let showDataButton = document.getElementById('showDataBtn')
+// let tareButton = document.getElementById('tareBtn')
 let analyzeButton = document.getElementById('analyzeBtn')
-let deleteButton = document.getElementById('deleteBtn')
+// let deleteButton = document.getElementById('deleteBtn')
 
 var wiibalanceboard = undefined;
 
@@ -71,19 +71,15 @@ recordButton.addEventListener('click', () => {
   wiibalanceboard.isRecording = !wiibalanceboard.isRecording
 })
 
-showDataButton.addEventListener('click', () => {
-  console.log(wiibalanceboard.eventData)
-})
-
-tareButton.addEventListener('click', async () => {
-  console.log('Initiating 5 second tare')
-  wiibalanceboard.isTare = true
-  await delay(5000)
-  wiibalanceboard.isTare = false
-  console.log(wiibalanceboard.tareData)
-  console.log(wiibalanceboard.calibration)
-  wiibalanceboard.Tare()
-})
+// tareButton.addEventListener('click', async () => {
+//   console.log('Initiating 5 second tare')
+//   wiibalanceboard.isTare = true
+//   await delay(5000)
+//   wiibalanceboard.isTare = false
+//   console.log(wiibalanceboard.tareData)
+//   console.log(wiibalanceboard.calibration)
+//   wiibalanceboard.Tare()
+// })
 
 analyzeButton.addEventListener('click', () => {
   let time = wiibalanceboard.CalculateTime()
@@ -96,13 +92,13 @@ analyzeButton.addEventListener('click', () => {
   document.getElementById('pathLengthCell').innerText = pathLength
 })
 
-deleteButton.addEventListener('click', () => {
-  wiibalanceboard.eventData = []
-})
+// deleteButton.addEventListener('click', () => {
+//   wiibalanceboard.eventData = []
+// })
 
-function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+// function delay(ms) {
+//   return new Promise(resolve => setTimeout(resolve, ms));
+// }
 
 
 function showLiveData() {
