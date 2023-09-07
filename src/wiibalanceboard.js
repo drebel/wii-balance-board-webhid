@@ -34,6 +34,7 @@ export default class WIIBalanceBoard extends WIIMote {
     this.eventData = []
     this.isRecording = false
     this.isTare = false
+    this.isShowingLiveData = true
     this.tareData = [[], [], [], []]
     this.newCalibration = [0,0,0,0]
     this.xyCoordinates = []

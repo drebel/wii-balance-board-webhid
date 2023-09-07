@@ -1,8 +1,7 @@
 import WIIBalanceBoard from "/src/wiibalanceboard.js";
 
 let requestButton = document.getElementById("request-hid-device");
-let startButton = document.getElementById('startBtn')
-let pauseButton = document.getElementById('pauseBtn')
+let toggleLiveDataButton = document.getElementById('startBtn')
 let clearButton = document.getElementById('clearBtn')
 let recordButton = document.getElementById('recordBtn')
 let showDataButton = document.getElementById('showDataBtn')
@@ -46,12 +45,22 @@ const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 
 
-startButton.addEventListener('click', () => {
-  showLiveData()
-})
+toggleLiveDataButton.addEventListener('click', () => {
+  wiibalanceboard.isShowingLiveData = !wiibalanceboard.isShowingLiveData
+  console.log(wiibalanceboard.isShowingLiveData)
+  if(wiibalanceboard.isShowingLiveData){
+    showLiveData()
+    toggleLiveDataButton.innerText = 'Stop Plotting Live Data'
+    document.getElementById('statusCell').innerText = 'Plotting Live Data (not recording)'
 
-pauseButton.addEventListener('click', () => {
-  wiibalanceboard.WeightListener = null
+  }else if(!wiibalanceboard.isShowingLiveData){
+    wiibalanceboard.WeightListener = null
+    toggleLiveDataButton.innerText = 'Start Plotting Live Data'
+    document.getElementById('statusCell').innerText = 'Paused Plotting Live Data (not recording)'
+  }else{
+    console.log(wiibalanceboard.isShowingLiveData, 'error')
+  }
+  
 })
 
 clearButton.addEventListener('click', () => {
@@ -82,7 +91,7 @@ analyzeButton.addEventListener('click', () => {
 
   wiibalanceboard.CalculateCoordinates()
   console.log(wiibalanceboard.xyCoordinates)
-  
+
   let pathLength =  wiibalanceboard.CalculatePathLength()
   document.getElementById('pathLengthCell').innerText = pathLength
 })
