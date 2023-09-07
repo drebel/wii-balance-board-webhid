@@ -68,7 +68,47 @@ clearButton.addEventListener('click', () => {
 })
 
 recordButton.addEventListener('click', () => {
+
+  // starts on false
+
+  // first click - start record
+  // event data starts empty array
+  // toggle is recording and then event data starts collecting
+
+  // second click - stop recording
+  // isrecording is toggled to false
+  // event data is a filled array
+  // calculate time
+  // calculate coordinates
+  // calculate path length
+  // do we clear event data here? probably not bc waht if we want to export it?
+  // but the data is saved in xycoordinates property... lets try not deletign it first... 
+
+  // third click - clear data then re record
+  // isrecording is toggled to true
+  // event data is filled, need to clear it
+  // then start filling event data again...
+  if(!wiibalanceboard.isRecording){
+    wiibalanceboard.eventData = []
+
+  }
+
   wiibalanceboard.isRecording = !wiibalanceboard.isRecording
+
+  if(wiibalanceboard.isRecording){
+    return
+  }else if(!wiibalanceboard.isRecording){
+    let time = wiibalanceboard.CalculateTime()
+    document.getElementById('timeCell').innerText = time / 1000
+  
+    wiibalanceboard.CalculateCoordinates()
+    console.log(wiibalanceboard.xyCoordinates)
+  
+    let pathLength =  wiibalanceboard.CalculatePathLength()
+    document.getElementById('pathLengthCell').innerText = pathLength
+    
+    // add function to plot xycoordinates on canvas
+  }
 })
 
 // tareButton.addEventListener('click', async () => {
