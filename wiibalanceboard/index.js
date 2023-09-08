@@ -47,7 +47,6 @@ const ctx = canvas.getContext('2d')
 
 toggleLiveDataButton.addEventListener('click', () => {
   wiibalanceboard.isShowingLiveData = !wiibalanceboard.isShowingLiveData
-  console.log(wiibalanceboard.isShowingLiveData)
   if(wiibalanceboard.isShowingLiveData){
     showLiveData()
     toggleLiveDataButton.innerText = 'Stop Plotting Live Data'
@@ -90,14 +89,23 @@ recordButton.addEventListener('click', () => {
   // then start filling event data again...
   if(!wiibalanceboard.isRecording){
     wiibalanceboard.eventData = []
+    document.getElementById('statusCell').innerText = `Live data plotting paused to optimze recording performance`
+    recordButton.innerText = 'Stop Recording'
 
   }
+
 
   wiibalanceboard.isRecording = !wiibalanceboard.isRecording
 
   if(wiibalanceboard.isRecording){
     return
   }else if(!wiibalanceboard.isRecording){
+    wiibalanceboard.WeightListener = null
+    recordButton.innerText = 'Record'
+    toggleLiveDataButton.innerText = 'Start Plotting Live Data'
+    document.getElementById('statusCell').innerText = `Paused Plotting Live Data (not recording)`
+    wiibalanceboard.isShowingLiveData = false
+
     let time = wiibalanceboard.CalculateTime()
     document.getElementById('timeCell').innerText = time / 1000
   
@@ -153,6 +161,8 @@ function showLiveData() {
     ctx.strokeRect(xValue,yValue,5,5)
   };
 }
+
+
 
 function enableControls() {
   document.getElementById("Controls").classList.remove("hidden");
