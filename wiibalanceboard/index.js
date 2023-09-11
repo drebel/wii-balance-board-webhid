@@ -41,8 +41,7 @@ function initButtons() {
     .addEventListener("click", () => wiibalanceboard.toggleLed(0));
 }
 
-const canvas = document.getElementById('canvas')
-const ctx = canvas.getContext('2d')
+const ctx = document.getElementById('canvas').getContext('2d')
 
 
 toggleLiveDataButton.addEventListener('click', () => {
@@ -116,6 +115,7 @@ recordButton.addEventListener('click', () => {
     document.getElementById('pathLengthCell').innerText = pathLength
     
     // add function to plot xycoordinates on canvas
+    plotXYCoordinates()
   }
 })
 
@@ -129,16 +129,16 @@ recordButton.addEventListener('click', () => {
 //   wiibalanceboard.Tare()
 // })
 
-analyzeButton.addEventListener('click', () => {
-  let time = wiibalanceboard.CalculateTime()
-  document.getElementById('timeCell').innerText = time / 1000
+// analyzeButton.addEventListener('click', () => {
+//   let time = wiibalanceboard.CalculateTime()
+//   document.getElementById('timeCell').innerText = time / 1000
 
-  wiibalanceboard.CalculateCoordinates()
-  console.log(wiibalanceboard.xyCoordinates)
+//   wiibalanceboard.CalculateCoordinates()
+//   console.log(wiibalanceboard.xyCoordinates)
 
-  let pathLength =  wiibalanceboard.CalculatePathLength()
-  document.getElementById('pathLengthCell').innerText = pathLength
-})
+//   let pathLength =  wiibalanceboard.CalculatePathLength()
+//   document.getElementById('pathLengthCell').innerText = pathLength
+// })
 
 // deleteButton.addEventListener('click', () => {
 //   wiibalanceboard.eventData = []
@@ -154,15 +154,25 @@ function showLiveData() {
     let totalWeight = weights.TOP_RIGHT + weights.BOTTOM_RIGHT + weights.TOP_LEFT + weights.BOTTOM_LEFT
     // console.log(totalWeight)
 
-    let xValue = (1 + ((weights.TOP_RIGHT + weights.BOTTOM_RIGHT) - (weights.TOP_LEFT + weights.BOTTOM_LEFT)) / (totalWeight)) * (416)
+    let xValue = (1 + ((weights.TOP_RIGHT + weights.BOTTOM_RIGHT) - (weights.TOP_LEFT + weights.BOTTOM_LEFT)) / (totalWeight)) * (433)
 
-    let yValue = (1 + ((weights.BOTTOM_RIGHT + weights.BOTTOM_LEFT) - (weights.TOP_RIGHT + weights.TOP_LEFT)) / (totalWeight)) * (268)
+    let yValue = (1 + ((weights.BOTTOM_RIGHT + weights.BOTTOM_LEFT) - (weights.TOP_RIGHT + weights.TOP_LEFT)) / (totalWeight)) * (238)
 
     ctx.strokeRect(xValue,yValue,5,5)
+    // console.log(xValue,yValue)
   };
 }
 
-
+function plotXYCoordinates(){
+  ctx.reset()
+  ctx.transform(1, 0, 0, 1, canvas.width/2, canvas.height/2)
+  let xyCoordinates = wiibalanceboard.xyCoordinates
+  for(let i = 0; i < xyCoordinates.length; i++){
+    // console.log(xyCoordinates[i][1], xyCoordinates[i][2])
+    ctx.strokeRect(xyCoordinates[i][1]*2, xyCoordinates[i][2]*2, 5, 5)
+  }
+  ctx.transform(1, 0, 0, 1, -canvas.width/2, -canvas.height/2)
+}
 
 function enableControls() {
   document.getElementById("Controls").classList.remove("hidden");

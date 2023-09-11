@@ -184,7 +184,6 @@ export default class WIIBalanceBoard extends WIIMote {
       return [(point[0] - initialTime) / 1000, xValue, yValue]
     })
     this.xyCoordinates = xyCoordinates
-
   }
 
   CalculatePathLength(){
