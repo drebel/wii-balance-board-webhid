@@ -108,38 +108,54 @@
 
 // let data = [9134,9411,18946,1914]
 
-[3.3456543456543457, 3.178780773739742, 0.9051194539249147, 2.9927083333333337]
+// [3.3456543456543457, 3.178780773739742, 0.9051194539249147, 2.9927083333333337]
 
-function WeightDecoder(data){
-    let calibration = [
-        [8740, 9092, 18868, 1576],
-        [10742, 10798, 20333, 3496],
-        [12084, 12764, 22065, 5169]
-    ]
-    const weights = [0,1,2,3].map(i => {
-        let raw = data[i]
-        if (raw < calibration[0][i]) {
-            return 0;
-        } else if (raw < calibration[1][i]) {
-            return (
-            17 *
-            ((raw - calibration[0][i]) /
-                (calibration[1][i] - calibration[0][i]))
-            );
-        } else {
-            return (
-            17 +
-            17 *
-                ((raw - calibration[1][i]) /
-                (calibration[2][i] - calibration[1][i]))
-            );
-        }
-    })
-    console.log(weights.reduce((acc, cv) => acc += cv))
-}
+// function WeightDecoder(data){
+//     let calibration = [
+//         [8740, 9092, 18868, 1576],
+//         [10742, 10798, 20333, 3496],
+//         [12084, 12764, 22065, 5169]
+//     ]
+//     const weights = [0,1,2,3].map(i => {
+//         let raw = data[i]
+//         if (raw < calibration[0][i]) {
+//             return 0;
+//         } else if (raw < calibration[1][i]) {
+//             return (
+//             17 *
+//             ((raw - calibration[0][i]) /
+//                 (calibration[1][i] - calibration[0][i]))
+//             );
+//         } else {
+//             return (
+//             17 +
+//             17 *
+//                 ((raw - calibration[1][i]) /
+//                 (calibration[2][i] - calibration[1][i]))
+//             );
+//         }
+//     })
+//     console.log(weights.reduce((acc, cv) => acc += cv))
+// }
 
-// WeightDecoder([9134,9411,18946,1914])
-WeightDecoder([10751,10345,20769,3803])
+// // WeightDecoder([9134,9411,18946,1914])
+// WeightDecoder([10751,10345,20769,3803])
 
-// [17.114008941877795, 12.485932004689332, 21.27944572748268, 20.119545726240286]
+// // [17.114008941877795, 12.485932004689332, 21.27944572748268, 20.119545726240286]
 
+function euclideanDistance(x1, y1, x2, y2) {
+    const deltaX = x2 - x1;
+    const deltaY = y2 - y1;
+    const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
+    return distance;
+  }
+  
+  const x1 = -12.24001302;
+  const y1 = 43.54641528;
+  const x2 = -12.07383557;
+  const y2 = 43.71195966;
+  
+  const distance = euclideanDistance(x1, y1, x2, y2);
+  console.log(`The Euclidean distance between the two points is approximately ${distance.toFixed(2)} mm.`);
+
+  euclideanDistance(-12.24001302,43.54641528,-12.07383557,43.71195966)

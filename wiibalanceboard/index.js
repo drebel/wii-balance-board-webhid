@@ -90,11 +90,32 @@ recordButton.addEventListener('click', () => {
     wiibalanceboard.eventData = []
     document.getElementById('statusCell').innerText = `Live data plotting paused to optimze recording performance`
     recordButton.innerText = 'Stop Recording'
-
   }
 
-
   wiibalanceboard.isRecording = !wiibalanceboard.isRecording
+  setTimeout(() => {
+    if(wiibalanceboard.isRecording){
+      wiibalanceboard.isRecording = false
+      wiibalanceboard.WeightListener = null
+    recordButton.innerText = 'Record'
+    toggleLiveDataButton.innerText = 'Start Plotting Live Data'
+    document.getElementById('statusCell').innerText = `Paused Plotting Live Data (not recording)`
+    wiibalanceboard.isShowingLiveData = false
+
+    let time = wiibalanceboard.CalculateTime()
+    document.getElementById('timeCell').innerText = time / 1000
+  
+    wiibalanceboard.CalculateCoordinates()
+    console.log(wiibalanceboard.xyCoordinates)
+  
+    let pathLength =  wiibalanceboard.CalculatePathLength()
+    document.getElementById('pathLengthCell').innerText = pathLength
+    
+    // add function to plot xycoordinates on canvas
+    plotXYCoordinates()
+    arrayToCSV(wiibalanceboard.xyCoordinates)
+    }
+  }, 60000);
 
   if(wiibalanceboard.isRecording){
     return
@@ -116,6 +137,7 @@ recordButton.addEventListener('click', () => {
     
     // add function to plot xycoordinates on canvas
     plotXYCoordinates()
+    arrayToCSV(wiibalanceboard.xyCoordinates)
   }
 })
 
@@ -181,6 +203,26 @@ function enableControls() {
   document.getElementById("canvasholder").classList.remove("hidden");
   document.getElementById("stats").classList.remove("hidden");
   document.getElementById("instructions").classList.add("hidden");
+}
+
+function arrayToCSV(dataArray) {
+  // Convert the array to a CSV string
+  const csvContent = dataArray.map(row => row.join(',')).join('\n');
+
+  // Create a Blob object from the CSV content
+  const blob = new Blob([csvContent], { type: 'text/csv' });
+
+  // Create a download link
+  const downloadLink = document.createElement('a');
+  downloadLink.href = window.URL.createObjectURL(blob);
+  downloadLink.download = 'data.csv';
+
+  // Trigger a click event on the download link
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+
+  // Clean up by removing the download link
+  document.body.removeChild(downloadLink);
 }
 
 initButtons();
