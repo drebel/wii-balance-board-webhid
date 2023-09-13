@@ -65,36 +65,17 @@ clearButton.addEventListener('click', () => {
   ctx.reset()
 })
 
+let timeoutId
+
 recordButton.addEventListener('click', () => {
 
-  // starts on false
-
-  // first click - start record
-  // event data starts empty array
-  // toggle is recording and then event data starts collecting
-
-  // second click - stop recording
-  // isrecording is toggled to false
-  // event data is a filled array
-  // calculate time
-  // calculate coordinates
-  // calculate path length
-  // do we clear event data here? probably not bc waht if we want to export it?
-  // but the data is saved in xycoordinates property... lets try not deletign it first... 
-
-  // third click - clear data then re record
-  // isrecording is toggled to true
-  // event data is filled, need to clear it
-  // then start filling event data again...
   if(!wiibalanceboard.isRecording){
     wiibalanceboard.eventData = []
     document.getElementById('statusCell').innerText = `Live data plotting paused to optimze recording performance`
     recordButton.innerText = 'Stop Recording'
-  }
 
-  wiibalanceboard.isRecording = !wiibalanceboard.isRecording
-  setTimeout(() => {
-    if(wiibalanceboard.isRecording){
+    console.log("start timeout")
+    timeoutId = setTimeout(() => {
       wiibalanceboard.isRecording = false
       wiibalanceboard.WeightListener = null
       recordButton.innerText = 'Record'
@@ -114,48 +95,53 @@ recordButton.addEventListener('click', () => {
       let pathLength =  wiibalanceboard.CalculatePathLength(wiibalanceboard.resampledCoordinates)
       document.getElementById('pathLengthCell').innerText = pathLength
 
-      // wiibalanceboard.CalculatePathLength(wiibalanceboard.rawCoordinates)
-      // wiibalanceboard.CalculatePathLength(wiibalanceboard.resampledCoordinates)
-      
-      // add function to plot xycoordinates on canvas
-      // plotXYCoordinates(wiibalanceboard.rawCoordinates,5)
       plotXYCoordinates(wiibalanceboard.resampledCoordinates,5)
 
-      arrayToCSV(wiibalanceboard.rawCoordinates)
-      arrayToCSV(wiibalanceboard.resampledCoordinates)
-    }
-  }, 5000)
+      console.log('timeout executed')
+
+      // arrayToCSV(wiibalanceboard.rawCoordinates)
+      // arrayToCSV(wiibalanceboard.resampledCoordinates)
+    }, 5000)
+  }
+
+
+  wiibalanceboard.isRecording = !wiibalanceboard.isRecording
+  
 
   if(wiibalanceboard.isRecording){
     return
   }else if(!wiibalanceboard.isRecording){
+
     wiibalanceboard.WeightListener = null
-      recordButton.innerText = 'Record'
-      toggleLiveDataButton.innerText = 'Start Plotting Live Data'
-      document.getElementById('statusCell').innerText = `Paused Plotting Live Data (not recording)`
-      wiibalanceboard.isShowingLiveData = false
 
-      let time = wiibalanceboard.CalculateTime()
-      document.getElementById('timeCell').innerText = time / 1000
-    
-      wiibalanceboard.CalculateCoordinates()
-      console.log(wiibalanceboard.rawCoordinates)
+    if(timeoutId){
+      console.log("cleartimeout true and canceled")
+      clearTimeout(timeoutId)
+    }else{
+      console.log('no timeoutId was set i guess')
+    }
 
-      wiibalanceboard.ResampleCoordinates(wiibalanceboard.rawCoordinates)
-      console.log(wiibalanceboard.resampledCoordinates)
-    
-      let pathLength =  wiibalanceboard.CalculatePathLength(wiibalanceboard.resampledCoordinates)
-      document.getElementById('pathLengthCell').innerText = pathLength
+    recordButton.innerText = 'Record'
+    toggleLiveDataButton.innerText = 'Start Plotting Live Data'
+    document.getElementById('statusCell').innerText = `Paused Plotting Live Data (not recording)`
+    wiibalanceboard.isShowingLiveData = false
 
-      // wiibalanceboard.CalculatePathLength(wiibalanceboard.rawCoordinates)
-      // wiibalanceboard.CalculatePathLength(wiibalanceboard.resampledCoordinates)
-      
-      // add function to plot xycoordinates on canvas
-      // plotXYCoordinates(wiibalanceboard.rawCoordinates,5)
-      plotXYCoordinates(wiibalanceboard.resampledCoordinates,5)
+    let time = wiibalanceboard.CalculateTime()
+    document.getElementById('timeCell').innerText = time / 1000
+  
+    wiibalanceboard.CalculateCoordinates()
+    console.log(wiibalanceboard.rawCoordinates)
 
-      arrayToCSV(wiibalanceboard.rawCoordinates)
-      arrayToCSV(wiibalanceboard.resampledCoordinates)
+    wiibalanceboard.ResampleCoordinates(wiibalanceboard.rawCoordinates)
+    console.log(wiibalanceboard.resampledCoordinates)
+  
+    let pathLength =  wiibalanceboard.CalculatePathLength(wiibalanceboard.resampledCoordinates)
+    document.getElementById('pathLengthCell').innerText = pathLength
+
+    plotXYCoordinates(wiibalanceboard.resampledCoordinates,5)
+
+    // arrayToCSV(wiibalanceboard.rawCoordinates)
+    // arrayToCSV(wiibalanceboard.resampledCoordinates)
   }
 })
 
