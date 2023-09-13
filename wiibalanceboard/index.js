@@ -1,6 +1,6 @@
-import WIIBalanceBoard from "/src/wiibalanceboard.js";
+import WIIBalanceBoard from "/src/wiibalanceboard.js"
 
-let requestButton = document.getElementById("request-hid-device");
+let requestButton = document.getElementById("request-hid-device")
 let toggleLiveDataButton = document.getElementById('startBtn')
 let clearButton = document.getElementById('clearBtn')
 let recordButton = document.getElementById('recordBtn')
@@ -12,25 +12,25 @@ let analyzeButton = document.getElementById('analyzeBtn')
 var wiibalanceboard = undefined;
 
 requestButton.addEventListener("click", async () => {
-  let device;
+  let device
   try {
     const devices = await navigator.hid.requestDevice({
       filters: [{ vendorId: 0x057e }]
     });
 
     device = devices[0];
-    wiibalanceboard = new WIIBalanceBoard(device);
+    wiibalanceboard = new WIIBalanceBoard(device)
   } catch (error) {
-    console.log("An error occurred.", error);
+    console.log("An error occurred.", error)
   }
 
   if (!device) {
-    console.log("No device was selected.");
+    console.log("No device was selected.")
   } else {
-    console.log(`HID: ${device.productName}`);
+    console.log(`HID: ${device.productName}`)
 
-    enableControls();
-    showLiveData();
+    enableControls()
+    showLiveData()
   }
 });
 
@@ -97,47 +97,65 @@ recordButton.addEventListener('click', () => {
     if(wiibalanceboard.isRecording){
       wiibalanceboard.isRecording = false
       wiibalanceboard.WeightListener = null
-    recordButton.innerText = 'Record'
-    toggleLiveDataButton.innerText = 'Start Plotting Live Data'
-    document.getElementById('statusCell').innerText = `Paused Plotting Live Data (not recording)`
-    wiibalanceboard.isShowingLiveData = false
+      recordButton.innerText = 'Record'
+      toggleLiveDataButton.innerText = 'Start Plotting Live Data'
+      document.getElementById('statusCell').innerText = `Paused Plotting Live Data (not recording)`
+      wiibalanceboard.isShowingLiveData = false
 
-    let time = wiibalanceboard.CalculateTime()
-    document.getElementById('timeCell').innerText = time / 1000
-  
-    wiibalanceboard.CalculateCoordinates()
-    console.log(wiibalanceboard.xyCoordinates)
-  
-    let pathLength =  wiibalanceboard.CalculatePathLength()
-    document.getElementById('pathLengthCell').innerText = pathLength
+      let time = wiibalanceboard.CalculateTime()
+      document.getElementById('timeCell').innerText = time / 1000
     
-    // add function to plot xycoordinates on canvas
-    plotXYCoordinates()
-    arrayToCSV(wiibalanceboard.xyCoordinates)
+      wiibalanceboard.CalculateCoordinates()
+      console.log(wiibalanceboard.rawCoordinates)
+
+      wiibalanceboard.ResampleCoordinates(wiibalanceboard.rawCoordinates)
+      console.log(wiibalanceboard.resampledCoordinates)
+    
+      let pathLength =  wiibalanceboard.CalculatePathLength(wiibalanceboard.resampledCoordinates)
+      document.getElementById('pathLengthCell').innerText = pathLength
+
+      // wiibalanceboard.CalculatePathLength(wiibalanceboard.rawCoordinates)
+      // wiibalanceboard.CalculatePathLength(wiibalanceboard.resampledCoordinates)
+      
+      // add function to plot xycoordinates on canvas
+      // plotXYCoordinates(wiibalanceboard.rawCoordinates,5)
+      plotXYCoordinates(wiibalanceboard.resampledCoordinates,5)
+
+      arrayToCSV(wiibalanceboard.rawCoordinates)
+      arrayToCSV(wiibalanceboard.resampledCoordinates)
     }
-  }, 60000);
+  }, 5000)
 
   if(wiibalanceboard.isRecording){
     return
   }else if(!wiibalanceboard.isRecording){
     wiibalanceboard.WeightListener = null
-    recordButton.innerText = 'Record'
-    toggleLiveDataButton.innerText = 'Start Plotting Live Data'
-    document.getElementById('statusCell').innerText = `Paused Plotting Live Data (not recording)`
-    wiibalanceboard.isShowingLiveData = false
+      recordButton.innerText = 'Record'
+      toggleLiveDataButton.innerText = 'Start Plotting Live Data'
+      document.getElementById('statusCell').innerText = `Paused Plotting Live Data (not recording)`
+      wiibalanceboard.isShowingLiveData = false
 
-    let time = wiibalanceboard.CalculateTime()
-    document.getElementById('timeCell').innerText = time / 1000
-  
-    wiibalanceboard.CalculateCoordinates()
-    console.log(wiibalanceboard.xyCoordinates)
-  
-    let pathLength =  wiibalanceboard.CalculatePathLength()
-    document.getElementById('pathLengthCell').innerText = pathLength
+      let time = wiibalanceboard.CalculateTime()
+      document.getElementById('timeCell').innerText = time / 1000
     
-    // add function to plot xycoordinates on canvas
-    plotXYCoordinates()
-    arrayToCSV(wiibalanceboard.xyCoordinates)
+      wiibalanceboard.CalculateCoordinates()
+      console.log(wiibalanceboard.rawCoordinates)
+
+      wiibalanceboard.ResampleCoordinates(wiibalanceboard.rawCoordinates)
+      console.log(wiibalanceboard.resampledCoordinates)
+    
+      let pathLength =  wiibalanceboard.CalculatePathLength(wiibalanceboard.resampledCoordinates)
+      document.getElementById('pathLengthCell').innerText = pathLength
+
+      // wiibalanceboard.CalculatePathLength(wiibalanceboard.rawCoordinates)
+      // wiibalanceboard.CalculatePathLength(wiibalanceboard.resampledCoordinates)
+      
+      // add function to plot xycoordinates on canvas
+      // plotXYCoordinates(wiibalanceboard.rawCoordinates,5)
+      plotXYCoordinates(wiibalanceboard.resampledCoordinates,5)
+
+      arrayToCSV(wiibalanceboard.rawCoordinates)
+      arrayToCSV(wiibalanceboard.resampledCoordinates)
   }
 })
 
@@ -167,7 +185,7 @@ recordButton.addEventListener('click', () => {
 // })
 
 // function delay(ms) {
-//   return new Promise(resolve => setTimeout(resolve, ms));
+//   return new Promise(resolve => setTimeout(resolve, ms))
 // }
 
 
@@ -182,47 +200,47 @@ function showLiveData() {
 
     ctx.strokeRect(xValue,yValue,5,5)
     // console.log(xValue,yValue)
-  };
+  }
 }
 
-function plotXYCoordinates(){
-  ctx.reset()
-  ctx.transform(1, 0, 0, 1, canvas.width/2, canvas.height/2)
-  let xyCoordinates = wiibalanceboard.xyCoordinates
+function plotXYCoordinates(data,size){
+  // ctx.reset()
+  ctx.transform(1, 0, 0, -1, canvas.width/2, canvas.height/2)
+  let xyCoordinates = data
   for(let i = 0; i < xyCoordinates.length; i++){
     // console.log(xyCoordinates[i][1], xyCoordinates[i][2])
-    ctx.strokeRect(xyCoordinates[i][1]*2, xyCoordinates[i][2]*2, 5, 5)
+    ctx.strokeRect(xyCoordinates[i][1]*2, xyCoordinates[i][2]*2, size, size)
   }
-  ctx.transform(1, 0, 0, 1, -canvas.width/2, -canvas.height/2)
+  ctx.transform(1, 0, 0, -1, -canvas.width/2, -canvas.height/2)
 }
 
 function enableControls() {
-  document.getElementById("Controls").classList.remove("hidden");
-  // document.getElementById("WeightsViz").classList.remove("hidden");
-  // document.getElementById("fakecanvas").classList.remove("hidden");
-  document.getElementById("canvasholder").classList.remove("hidden");
-  document.getElementById("stats").classList.remove("hidden");
-  document.getElementById("instructions").classList.add("hidden");
+  document.getElementById("Controls").classList.remove("hidden")
+  // document.getElementById("WeightsViz").classList.remove("hidden")
+  // document.getElementById("fakecanvas").classList.remove("hidden")
+  document.getElementById("canvasholder").classList.remove("hidden")
+  document.getElementById("stats").classList.remove("hidden")
+  document.getElementById("instructions").classList.add("hidden")
 }
 
 function arrayToCSV(dataArray) {
   // Convert the array to a CSV string
-  const csvContent = dataArray.map(row => row.join(',')).join('\n');
+  const csvContent = dataArray.map(row => row.join(',')).join('\n')
 
   // Create a Blob object from the CSV content
-  const blob = new Blob([csvContent], { type: 'text/csv' });
+  const blob = new Blob([csvContent], { type: 'text/csv' })
 
   // Create a download link
-  const downloadLink = document.createElement('a');
+  const downloadLink = document.createElement('a')
   downloadLink.href = window.URL.createObjectURL(blob);
-  downloadLink.download = 'data.csv';
+  downloadLink.download = 'data.csv'
 
   // Trigger a click event on the download link
-  document.body.appendChild(downloadLink);
-  downloadLink.click();
+  document.body.appendChild(downloadLink)
+  downloadLink.click()
 
   // Clean up by removing the download link
-  document.body.removeChild(downloadLink);
+  document.body.removeChild(downloadLink)
 }
 
-initButtons();
+initButtons()
