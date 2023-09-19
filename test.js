@@ -143,19 +143,19 @@
 
 // // [17.114008941877795, 12.485932004689332, 21.27944572748268, 20.119545726240286]
 
-function euclideanDistance(x1, y1, x2, y2) {
-    const deltaX = x2 - x1;
-    const deltaY = y2 - y1;
-    const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
-    return distance;
-  }
+// function euclideanDistance(x1, y1, x2, y2) {
+//     const deltaX = x2 - x1;
+//     const deltaY = y2 - y1;
+//     const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
+//     return distance;
+//   }
   
-  const x1 = -12.24001302;
-  const y1 = 43.54641528;
-  const x2 = -12.07383557;
-  const y2 = 43.71195966;
+//   const x1 = -12.24001302;
+//   const y1 = 43.54641528;
+//   const x2 = -12.07383557;
+//   const y2 = 43.71195966;
   
-  const distance = euclideanDistance(x1, y1, x2, y2);
-  console.log(`The Euclidean distance between the two points is approximately ${distance.toFixed(2)} mm.`);
+//   const distance = euclideanDistance(x1, y1, x2, y2);
+//   console.log(`The Euclidean distance between the two points is approximately ${distance.toFixed(2)} mm.`);
 
-  euclideanDistance(-12.24001302,43.54641528,-12.07383557,43.71195966)
+//   euclideanDistance(-12.24001302,43.54641528,-12.07383557,43.71195966)

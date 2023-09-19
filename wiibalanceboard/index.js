@@ -71,37 +71,15 @@ let timeoutId
 recordButton.addEventListener('click', () => {
 
   if(!wiibalanceboard.isRecording){
+    
     wiibalanceboard.eventData = []
     document.getElementById('statusCell').innerText = `Live data plotting paused to optimze recording performance`
     recordButton.innerText = 'Stop Recording'
 
-    console.log("start timeout")
     timeoutId = setTimeout(() => {
       wiibalanceboard.isRecording = false
-      wiibalanceboard.WeightListener = null
-      recordButton.innerText = 'Record'
-      toggleLiveDataButton.innerText = 'Start Plotting Live Data'
-      document.getElementById('statusCell').innerText = `Paused Plotting Live Data (not recording)`
-      wiibalanceboard.isShowingLiveData = false
-
-      let time = wiibalanceboard.CalculateTime()
-      document.getElementById('timeCell').innerText = time / 1000
-    
-      wiibalanceboard.CalculateCoordinates()
-      console.log(wiibalanceboard.rawCoordinates)
-
-      wiibalanceboard.ResampleCoordinates(wiibalanceboard.rawCoordinates)
-      console.log(wiibalanceboard.resampledCoordinates)
-    
-      let pathLength =  wiibalanceboard.CalculatePathLength(wiibalanceboard.resampledCoordinates)
-      document.getElementById('pathLengthCell').innerText = pathLength
-
-      plotXYCoordinates(wiibalanceboard.resampledCoordinates,5)
-
-      console.log('timeout executed')
-
-      // arrayToCSV(wiibalanceboard.rawCoordinates)
-      // arrayToCSV(wiibalanceboard.resampledCoordinates)
+      handleStopRecording()
+      
     }, 5000)
   }
 
@@ -112,43 +90,8 @@ recordButton.addEventListener('click', () => {
   if(wiibalanceboard.isRecording){
     return
   }else if(!wiibalanceboard.isRecording){
-
-    wiibalanceboard.WeightListener = null
-
-    if(timeoutId){
-      console.log("cleartimeout true and canceled")
-      clearTimeout(timeoutId)
-    }else{
-      console.log('no timeoutId was set i guess')
-    }
-
-    recordButton.innerText = 'Record'
-    toggleLiveDataButton.innerText = 'Start Plotting Live Data'
-    document.getElementById('statusCell').innerText = `Paused Plotting Live Data (not recording)`
-    wiibalanceboard.isShowingLiveData = false
-
-    let time = wiibalanceboard.CalculateTime()
-    document.getElementById('timeCell').innerText = time / 1000
-  
-    wiibalanceboard.CalculateCoordinates()
-    console.log(wiibalanceboard.rawCoordinates)
-
-    // wiibalanceboard.ResampleCoordinates(jaSignal)
-    // console.log(wiibalanceboard.resampledCoordinates)
-    wiibalanceboard.ResampleCoordinates(wiibalanceboard.rawCoordinates)
-    console.log(wiibalanceboard.resampledCoordinates)
-  
-    let pathLength =  wiibalanceboard.CalculatePathLength(wiibalanceboard.resampledCoordinates)
-    document.getElementById('pathLengthCell').innerText = pathLength
-
-    plotXYCoordinates(wiibalanceboard.resampledCoordinates,5)
-    // plotXYCoordinates(wiibalanceboard.rawCoordinates,9)
-    
-    // plotlyXYCoordinates(wiibalanceboard.resampledCoordinates, wiibalanceboard.rawCoordinates)
-    // plotlyXYCoordinates(wiibalanceboard.rawCoordinates)
-
-    // arrayToCSV(wiibalanceboard.rawCoordinates)
-    // arrayToCSV(wiibalanceboard.resampledCoordinates)
+    timeoutId ? clearTimeout(timeoutId) : console.log('timeoutId does not exist')
+    handleStopRecording()
   }
 })
 
@@ -181,6 +124,75 @@ recordButton.addEventListener('click', () => {
 //   return new Promise(resolve => setTimeout(resolve, ms))
 // }
 
+function handleStopRecording(){
+
+    timeoutId = setTimeout(() => {
+      wiibalanceboard.isRecording = false
+      wiibalanceboard.WeightListener = null
+      recordButton.innerText = 'Record'
+      toggleLiveDataButton.innerText = 'Start Plotting Live Data'
+      document.getElementById('statusCell').innerText = `Paused Plotting Live Data (not recording)`
+      wiibalanceboard.isShowingLiveData = false
+
+      let time = wiibalanceboard.CalculateTime()
+      document.getElementById('timeCell').innerText = time / 1000
+    
+      wiibalanceboard.CalculateCoordinates()
+      console.log(wiibalanceboard.rawCoordinates)
+
+      wiibalanceboard.ResampleCoordinates(wiibalanceboard.rawCoordinates)
+      console.log(wiibalanceboard.resampledCoordinates)
+    
+      let pathLength =  wiibalanceboard.CalculatePathLength(wiibalanceboard.resampledCoordinates)
+      document.getElementById('pathLengthCell').innerText = pathLength
+
+      plotXYCoordinates(wiibalanceboard.resampledCoordinates,5)
+
+      console.log('timeout executed')
+
+      arrayToCSV(wiibalanceboard.rawCoordinates)
+      arrayToCSV(wiibalanceboard.resampledCoordinates)
+    }, 5000)
+
+  if(!wiibalanceboard.isRecording){
+
+    wiibalanceboard.WeightListener = null
+
+    if(timeoutId){
+      clearTimeout(timeoutId)
+    }
+
+    recordButton.innerText = 'Record'
+    toggleLiveDataButton.innerText = 'Start Plotting Live Data'
+    document.getElementById('statusCell').innerText = `Paused Plotting Live Data (not recording)`
+    wiibalanceboard.isShowingLiveData = false
+
+    let time = wiibalanceboard.CalculateTime()
+    document.getElementById('timeCell').innerText = time / 1000
+
+    wiibalanceboard.CalculateCoordinates()
+    console.log(wiibalanceboard.rawCoordinates)
+
+    // wiibalanceboard.ResampleCoordinates(jaSignal)
+    // console.log(wiibalanceboard.resampledCoordinates)
+    wiibalanceboard.ResampleCoordinates(wiibalanceboard.rawCoordinates)
+    console.log(wiibalanceboard.resampledCoordinates)
+
+    let pathLength =  wiibalanceboard.CalculatePathLength(wiibalanceboard.resampledCoordinates)
+    document.getElementById('pathLengthCell').innerText = pathLength
+
+    plotXYCoordinates(wiibalanceboard.resampledCoordinates,5)
+    // plotXYCoordinates(wiibalanceboard.rawCoordinates,9)
+    
+    // plotlyXYCoordinates(wiibalanceboard.resampledCoordinates, wiibalanceboard.rawCoordinates)
+    // plotlyXYCoordinates(wiibalanceboard.rawCoordinates)
+
+    // arrayToCSV(wiibalanceboard.rawCoordinates)
+    // arrayToCSV(wiibalanceboard.resampledCoordinates)
+
+
+  }
+}
 
 function showLiveData() {
   wiibalanceboard.WeightListener = weights => {
