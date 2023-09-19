@@ -10,6 +10,10 @@ import {
 
 import WIIMote from "./wiimote.js"
 
+// const Decimal = require('decimal.js')
+// import Decimal from "../node_modules/decimal.js/decimal.js"
+// import Decimal from "decimal.js"
+
 export default class WIIBalanceBoard extends WIIMote {
   constructor(device) {
     super(device)
@@ -187,61 +191,61 @@ export default class WIIBalanceBoard extends WIIMote {
     this.rawCoordinates = rawCoordinates
   }
 
-  ResampleCoordinates(data, windowSize = 1, desiredFrequency = 25){
-    let currentTime = Math.max(0, data[0][0])
-    const outputData = []
-
+  ResampleCoordinates(data, windowSize = 0.25, desiredFrequency = 25){
+    let currentTime = Math.max(0, data[0][0]);
+    const outputData = [];
+    
     while (currentTime < data[data.length - 1][0]) {
         // Create an array to store relevant data point indices within the window
-        const relevantTimes = []
+        const relevantTimes = [];
 
         // Find data points that fall within the current sliding window
         for (let t = 0; t < data.length; t++) {
             if (Math.abs(data[t][0] - currentTime) < windowSize * 0.5) {
-                relevantTimes.push(t)
+                relevantTimes.push(t);
             }
         }
 
         if (relevantTimes.length === 1) {
             // If there's only one relevant data point, use it as is
-            const t = relevantTimes[0]
+            const t = relevantTimes[0];
             outputData.push([currentTime, data[t][1], data[t][2]])
         } else {
-            let sumX = 0
-            let sumY = 0
-            let weightSum = 0
+            let sumX = 0;
+            let sumY = 0;
+            let weightSum = 0;
 
             // Calculate the weighted average of data points within the window
             for (let i = 0; i < relevantTimes.length; i++) {
-                const t = relevantTimes[i]
-                let leftBorder, rightBorder
+                const t = relevantTimes[i];
+                let leftBorder, rightBorder;
 
                 if (i === 0 || t === 0) {
-                    leftBorder = Math.max(data[0][0], currentTime - windowSize * 0.5)
+                    leftBorder = Math.max(data[0][0], currentTime - windowSize * 0.5);
                 } else {
-                    leftBorder = 0.5 * (data[t][0] + data[t - 1][0])
+                    leftBorder = 0.5 * (data[t][0] + data[t - 1][0]);
                 }
 
                 if (i === relevantTimes.length - 1) {
-                    rightBorder = Math.min(data[data.length - 1][0], currentTime + windowSize * 0.5)
+                    rightBorder = Math.min(data[data.length - 1][0], currentTime + windowSize * 0.5);
                 } else {
-                    rightBorder = 0.5 * (data[t + 1][0] + data[t][0])
+                    rightBorder = 0.5 * (data[t + 1][0] + data[t][0]);
                 }
 
-                const w = rightBorder - leftBorder
-                sumX += data[t][1] * w // Accumulate weighted X values
-                sumY += data[t][2] * w // Accumulate weighted Y values
-                weightSum += w
+                const w = rightBorder - leftBorder;
+                sumX += data[t][1] * w; // Accumulate weighted X values
+                sumY += data[t][2] * w; // Accumulate weighted Y values
+                weightSum += w;
             }
 
-            const resampledX = sumX / weightSum
-            const resampledY = sumY / weightSum
+            const resampledX = sumX / weightSum;
+            const resampledY = sumY / weightSum;
 
-            outputData.push([currentTime, resampledX, resampledY])
+            outputData.push([currentTime, resampledX, resampledY]);
         }
 
         // Move the sliding window by incrementing the current time
-        currentTime += 1 / desiredFrequency
+        currentTime += 1 / desiredFrequency;
     }
 
     this.resampledCoordinates = outputData // Return resampled data as an array of arrays

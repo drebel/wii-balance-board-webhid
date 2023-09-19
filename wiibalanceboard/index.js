@@ -46,6 +46,7 @@ const ctx = document.getElementById('canvas').getContext('2d')
 
 toggleLiveDataButton.addEventListener('click', () => {
   wiibalanceboard.isShowingLiveData = !wiibalanceboard.isShowingLiveData
+  console.log(wiibalanceboard.isShowingLiveData)
   if(wiibalanceboard.isShowingLiveData){
     showLiveData()
     toggleLiveDataButton.innerText = 'Stop Plotting Live Data'
@@ -132,6 +133,8 @@ recordButton.addEventListener('click', () => {
     wiibalanceboard.CalculateCoordinates()
     console.log(wiibalanceboard.rawCoordinates)
 
+    // wiibalanceboard.ResampleCoordinates(jaSignal)
+    // console.log(wiibalanceboard.resampledCoordinates)
     wiibalanceboard.ResampleCoordinates(wiibalanceboard.rawCoordinates)
     console.log(wiibalanceboard.resampledCoordinates)
   
@@ -139,6 +142,10 @@ recordButton.addEventListener('click', () => {
     document.getElementById('pathLengthCell').innerText = pathLength
 
     plotXYCoordinates(wiibalanceboard.resampledCoordinates,5)
+    // plotXYCoordinates(wiibalanceboard.rawCoordinates,9)
+    
+    // plotlyXYCoordinates(wiibalanceboard.resampledCoordinates, wiibalanceboard.rawCoordinates)
+    // plotlyXYCoordinates(wiibalanceboard.rawCoordinates)
 
     // arrayToCSV(wiibalanceboard.rawCoordinates)
     // arrayToCSV(wiibalanceboard.resampledCoordinates)
@@ -190,15 +197,50 @@ function showLiveData() {
 }
 
 function plotXYCoordinates(data,size){
-  // ctx.reset()
+  ctx.reset()
   ctx.transform(1, 0, 0, -1, canvas.width/2, canvas.height/2)
   let xyCoordinates = data
   for(let i = 0; i < xyCoordinates.length; i++){
     // console.log(xyCoordinates[i][1], xyCoordinates[i][2])
     ctx.strokeRect(xyCoordinates[i][1]*2, xyCoordinates[i][2]*2, size, size)
   }
-  ctx.transform(1, 0, 0, -1, -canvas.width/2, -canvas.height/2)
+  ctx.setTransform(1, 0, 0, 1, 0, 0)
+  // ctx.transform(1, 0, 0, -1, -canvas.width/2, -canvas.height/2)
 }
+
+// function plotlyXYCoordinates(data0, data1){
+//   let trace0 = {
+//     x:[],
+//     y:[],
+//     mode: 'markers',
+//     type: 'scatter',
+//   }
+
+//   let trace1 = {
+//     x:[],
+//     y:[],
+//     mode: 'lines+markers',
+//     type: 'scatter',
+//   }
+
+//   data0.forEach(element => {
+//     trace0.x.push(element[1])
+//     trace0.y.push(element[2])
+//   });
+
+//   data1.forEach(element => {
+//     trace1.x.push(element[1])
+//     trace1.y.push(element[2])
+//   });
+
+//   let plotData = [trace0, trace1]
+
+//   console.log(trace0)
+//   console.log(trace1)
+
+
+//   Plotly.newPlot('plotlyCanvas', plotData, {scrollZoom: true});
+// }
 
 function enableControls() {
   document.getElementById("Controls").classList.remove("hidden")
