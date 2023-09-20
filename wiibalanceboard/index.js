@@ -4,6 +4,7 @@ let requestButton = document.getElementById("request-hid-device")
 let toggleLiveDataButton = document.getElementById('startBtn')
 let clearButton = document.getElementById('clearBtn')
 let recordButton = document.getElementById('recordBtn')
+let downloadButton = document.getElementById('downloadBtn')
 // let showDataButton = document.getElementById('showDataBtn')
 // let tareButton = document.getElementById('tareBtn')
 let analyzeButton = document.getElementById('analyzeBtn')
@@ -85,9 +86,13 @@ recordButton.addEventListener('click', () => {
 
 
   wiibalanceboard.isRecording = !wiibalanceboard.isRecording
+
   
 
   if(wiibalanceboard.isRecording){
+    //does having this here cause a delay in recording hz?
+    downloadButton.classList.add('hidden')
+
     return
   }else if(!wiibalanceboard.isRecording){
     timeoutId ? clearTimeout(timeoutId) : console.log('timeoutId does not exist')
@@ -124,14 +129,19 @@ recordButton.addEventListener('click', () => {
 //   return new Promise(resolve => setTimeout(resolve, ms))
 // }
 
+downloadButton.addEventListener('click', () => {
+  document.getElementById('raw').click()
+  document.getElementById('resampled').click()
+})
+
 function handleStopRecording(){
 
-    timeoutId = setTimeout(() => {
-      wiibalanceboard.isRecording = false
       wiibalanceboard.WeightListener = null
+
       recordButton.innerText = 'Record'
       toggleLiveDataButton.innerText = 'Start Plotting Live Data'
       document.getElementById('statusCell').innerText = `Paused Plotting Live Data (not recording)`
+
       wiibalanceboard.isShowingLiveData = false
 
       let time = wiibalanceboard.CalculateTime()
@@ -148,50 +158,11 @@ function handleStopRecording(){
 
       plotXYCoordinates(wiibalanceboard.resampledCoordinates,5)
 
-      console.log('timeout executed')
+      arrayToCSV(wiibalanceboard.rawCoordinates, 'raw')
+      arrayToCSV(wiibalanceboard.resampledCoordinates, 'resampled')
 
-      arrayToCSV(wiibalanceboard.rawCoordinates)
-      arrayToCSV(wiibalanceboard.resampledCoordinates)
-    }, 5000)
+      downloadButton.classList.remove('hidden')
 
-  if(!wiibalanceboard.isRecording){
-
-    wiibalanceboard.WeightListener = null
-
-    if(timeoutId){
-      clearTimeout(timeoutId)
-    }
-
-    recordButton.innerText = 'Record'
-    toggleLiveDataButton.innerText = 'Start Plotting Live Data'
-    document.getElementById('statusCell').innerText = `Paused Plotting Live Data (not recording)`
-    wiibalanceboard.isShowingLiveData = false
-
-    let time = wiibalanceboard.CalculateTime()
-    document.getElementById('timeCell').innerText = time / 1000
-
-    wiibalanceboard.CalculateCoordinates()
-    console.log(wiibalanceboard.rawCoordinates)
-
-    // wiibalanceboard.ResampleCoordinates(jaSignal)
-    // console.log(wiibalanceboard.resampledCoordinates)
-    wiibalanceboard.ResampleCoordinates(wiibalanceboard.rawCoordinates)
-    console.log(wiibalanceboard.resampledCoordinates)
-
-    let pathLength =  wiibalanceboard.CalculatePathLength(wiibalanceboard.resampledCoordinates)
-    document.getElementById('pathLengthCell').innerText = pathLength
-
-    plotXYCoordinates(wiibalanceboard.resampledCoordinates,5)
-    // plotXYCoordinates(wiibalanceboard.rawCoordinates,9)
-    
-    // plotlyXYCoordinates(wiibalanceboard.resampledCoordinates, wiibalanceboard.rawCoordinates)
-    // plotlyXYCoordinates(wiibalanceboard.rawCoordinates)
-
-    // arrayToCSV(wiibalanceboard.rawCoordinates)
-    // arrayToCSV(wiibalanceboard.resampledCoordinates)
-
-
-  }
 }
 
 function showLiveData() {
@@ -263,7 +234,18 @@ function enableControls() {
   document.getElementById("instructions").classList.add("hidden")
 }
 
-function arrayToCSV(dataArray) {
+function arrayToCSV(dataArray, id) {
+
+
+  console.log(typeof id, id)
+  if(document.getElementById(id)){
+    const existingDownloadLink = document.getElementById(id)
+    document.body.removeChild(existingDownloadLink)
+    console.log('removed links')
+  }else{
+    console.log('nah')
+  }
+
   // Convert the array to a CSV string
   const csvContent = dataArray.map(row => row.join(',')).join('\n')
 
@@ -271,16 +253,20 @@ function arrayToCSV(dataArray) {
   const blob = new Blob([csvContent], { type: 'text/csv' })
 
   // Create a download link
+  const currentDate = new Date()
+  const formattedDate = currentDate.toISOString().replace(/:/g, "-").replace(/\..+/, "")
+
   const downloadLink = document.createElement('a')
-  downloadLink.href = window.URL.createObjectURL(blob);
-  downloadLink.download = 'data.csv'
+  downloadLink.href = window.URL.createObjectURL(blob)
+  downloadLink.id = id
+  downloadLink.download = `${id}_${formattedDate}.csv`
 
   // Trigger a click event on the download link
   document.body.appendChild(downloadLink)
-  downloadLink.click()
+  // downloadLink.click()
 
-  // Clean up by removing the download link
-  document.body.removeChild(downloadLink)
+  // // Clean up by removing the download link
+  // document.body.removeChild(downloadLink)
 }
 
 initButtons()
