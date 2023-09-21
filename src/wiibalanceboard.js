@@ -288,11 +288,11 @@ export default class WIIBalanceBoard extends WIIMote {
 
     switch (event.reportId) {
       case InputReport.STATUS:
-        console.log("status")
+        // console.log("status")
         break
       case InputReport.READ_MEM_DATA:
         // calibration data
-        console.log("calibration data")
+        // console.log("calibration data")
         this.WeightCalibrationDecoder(data)
         break;
       case DataReportMode.EXTENSION_8BYTES:
