@@ -74,14 +74,20 @@ recordButton.addEventListener('click', () => {
   if(!wiibalanceboard.isRecording){
     
     wiibalanceboard.eventData = []
-    document.getElementById('statusCell').innerText = `Live data plotting paused to optimze recording performance`
-    recordButton.innerText = 'Stop Recording'
+    let duration = document.getElementById('recordingDuration').value
+    recordButton.innerText = 'Stop'
+    let statusCell = document.getElementById('statusCell')
 
-    timeoutId = setTimeout(() => {
-      wiibalanceboard.isRecording = false
-      handleStopRecording()
-      
-    }, 5000)
+    if(duration > 0){
+      statusCell.innerText = `Live data plotting paused to optimze recording performance. Recording Duration: ${duration} seconds`
+      timeoutId = setTimeout(() => {
+        wiibalanceboard.isRecording = false
+        handleStopRecording()
+        
+      }, duration*1000)
+    }else{
+      statusCell.innerText = `Live data plotting paused to optimze recording performance. Recording Duration: no timer`
+    }
   }
 
 
@@ -162,7 +168,6 @@ function handleStopRecording(){
       arrayToCSV(wiibalanceboard.resampledCoordinates, 'resampled')
 
       downloadButton.classList.remove('hidden')
-
 }
 
 function showLiveData() {
