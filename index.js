@@ -156,7 +156,7 @@ function handleStopRecording(){
     
       wiibalanceboard.CalculateCoordinates()
 
-      wiibalanceboard.ResampleCoordinates(wiibalanceboard.rawCoordinates)
+      wiibalanceboard.resampledCoordinates = wiibalanceboard.ResampleCoordinates(wiibalanceboard.rawCoordinates)
     
       let pathLength =  wiibalanceboard.CalculatePathLength(wiibalanceboard.resampledCoordinates)
       document.getElementById('pathLengthCell').innerText = pathLength

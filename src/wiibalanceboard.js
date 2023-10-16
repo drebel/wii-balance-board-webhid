@@ -1,9 +1,6 @@
 import {
   ReportMode,
   DataReportMode,
-  LEDS,
-  BUTTON_BYTE1,
-  BUTTON_BYTE2,
   InputReport,
   WiiBalanceBoardPositions,
 } from "./const.js"
@@ -247,8 +244,8 @@ export default class WIIBalanceBoard extends WIIMote {
         // Move the sliding window by incrementing the current time
         currentTime += 1 / desiredFrequency;
     }
-
-    this.resampledCoordinates = outputData // Return resampled data as an array of arrays
+    // this.resampledCoordinates = outputData // Return resampled data as an array of arrays
+    return outputData
   }
 
   CalculatePathLength(data){
@@ -270,7 +267,6 @@ export default class WIIBalanceBoard extends WIIMote {
       let dist = Math.sqrt((xyCoordinates[i+1][1] - xyCoordinates[i][1])**2 + (xyCoordinates[i+1][2] - xyCoordinates[i][2])**2)
       pathLength += dist
     }
-    // console.log(pathLength)
     return pathLength
   }
 
