@@ -7,7 +7,7 @@ let recordButton = document.getElementById('recordBtn')
 let downloadButton = document.getElementById('downloadBtn')
 // let showDataButton = document.getElementById('showDataBtn')
 // let tareButton = document.getElementById('tareBtn')
-let analyzeButton = document.getElementById('analyzeBtn')
+// let analyzeButton = document.getElementById('analyzeBtn')
 // let deleteButton = document.getElementById('deleteBtn')
 
 var wiibalanceboard = undefined;
