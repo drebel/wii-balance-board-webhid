@@ -1,5 +1,5 @@
-# Wiimote WebHID API Library
-A Wiimote implementation using WebHID.
+# Wii Balance Board Center of Pressure
+This is an experimental project to get center of pressure (CoP) data from the Wii Balance Board (WBB) in the browser.
 
 ![IR Canvas demo using the example bellow](demo.gif)
 
@@ -8,30 +8,43 @@ A Wiimote implementation using WebHID.
 
 You can try a demo of this library here:
 
-**Demo available:** [https://kevinpicchi.github.io/wiimote-webhid](https://picchikevin.github.io/wiimote-webhid/)
+**Demo available:** [https://measure-balance.netlify.app](https://measure-balance.netlify.app)
 
 
 ## Introduction
 
-The simple goal of this project is to make the original Wiimote (Nitendo RVL-CNT-01) work on the Web.
-This is done by leveraging the power of [WebHID](https://wicg.github.io/webhid/).
+The goal of this project was to get the WBB to work on the Web. This is done by leveraging the power of [WebHID](https://wicg.github.io/webhid/).
 
-Got a question? Feel free to raise an issue or reach out on twitter: [@KevinPicchi](https://twitter.com/KevinPicchi)
+There are numerous research studies done on the WBB and its potential clinical applications. However there has been little to no access for clinicians and patients to software that would enable them to use it. 
+
+This project will explore the possbile applications and share them on the web.
+
+## Features
+
+- Connect WBB to the browser
+- Calculate CoP while on the board
+- Display CoP in real time for biofeedback
+- Clear data plot, pause and play live feed
+- Record trials of balance using a timer or manually stopping the recording
+- Filter the raw CoP data using SwARII method developed by 
+- Download raw and filtered data during trials as a CSV file 
+    - CSV file will be formated in three columns: time(s), xCoordinate(mm), yCoordinate(mm)
+- Toggle LED on board
 
 
-## Contributions:
-**I'd love you to contribute to the project** so that we might even make make it **better** together!
+## How It's Made
 
-So please do fire your issues and pull request my way!
+Tech used: HTML JavaScript Tailwind
+
+## Optimizations
+
+- add more metrics for measuring balance based on current research
+- change plotting interface to something more interactive and can show multiple plots such as d3
+- add backend so users can store data and compare it over time
+- improve UI to show interpretations of balance score
 
 ## Special Thanks
-Special thanks to [WiiBrew Wiki](https://wiibrew.org/wiki/Wiimote), they have been my main source of information, the documentation on it is very well written. I can't say how much their reverse engineer was useful to my project. 
 
-Thanks again to anyone who contributed to it! https://wiibrew.org/wiki/Wiimote
-
-
-## Awesome Wiimote Implementation:
-- [C# Unity Wiimote](https://github.com/Flafla2/Unity-Wiimote) by @Flafla2
-- [Experimental Wiimote connection through HID](https://github.com/natel97/wiimote-chrome) by @natel97
-
-Feel free to create a PR and list your implementation here.
+PicchiKevin for the original WiiMote API
+Zackaton for the Wii Balance Board implementation
+Everyone who contributed info to the [WiiBrew Wiki](https://wiibrew.org/wiki/Wiimote)
