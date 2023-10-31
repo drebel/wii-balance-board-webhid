@@ -1,12 +1,7 @@
 # Wii Balance Board Center of Pressure
 This is an experimental project to get center of pressure (CoP) data from the Wii Balance Board (WBB) in the browser.
 
-![IR Canvas demo using the example bellow](demo.gif)
-
-*IR Canvas demo using the example bellow*
-
-
-You can try a demo of this library here:
+![Wii Balance Board demo gif](WBBdemo.gif)
 
 **Demo available:** [https://measure-balance.netlify.app](https://measure-balance.netlify.app)
 
@@ -34,7 +29,7 @@ This project will explore the possbile applications and share them on the web.
 
 ## How It's Made
 
-Tech used: HTML JavaScript Tailwind
+Tech used: HTML JavaScript Tailwind WebHID-API
 
 ## Optimizations
 
@@ -45,6 +40,8 @@ Tech used: HTML JavaScript Tailwind
 
 ## Special Thanks
 
-PicchiKevin for the original WiiMote API
-Zackaton for the Wii Balance Board implementation
-Everyone who contributed info to the [WiiBrew Wiki](https://wiibrew.org/wiki/Wiimote)
+PicchiKevin for the original WiiMote API 
+
+Zackaton for the Wii Balance Board implementation 
+
+Everyone who contributed info to the [WiiBrew Wiki](https://wiibrew.org/wiki/Wiimote) 
