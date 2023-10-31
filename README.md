@@ -3,13 +3,12 @@ This is an experimental project to get center of pressure (CoP) data from the Wi
 
 ![Wii Balance Board demo gif](WBBdemo.gif)
 
-**Demo available:** [https://kevinpicchi.github.io/wiimote-webhid](https://picchikevin.github.io/wiimote-webhid/)
+**Demo available:** [https://measure-balance.netlify.app](https://measure-balance.netlify.app)
 
 
 ## Introduction
 
-The simple goal of this project is to make the original Wiimote (Nitendo RVL-CNT-01) work on the Web.
-This is done by leveraging the power of [WebHID](https://wicg.github.io/webhid/).
+The goal of this project was to get the WBB to work on the Web. This is done by leveraging the power of [WebHID](https://wicg.github.io/webhid/).
 
 There are numerous research studies done on the WBB and its potential clinical applications. However there has been little to no access for clinicians and patients to software that would enable them to use it. 
 
@@ -30,7 +29,7 @@ This project will explore the possbile applications and share them on the web.
 
 ## How It's Made
 
-Tech used: HTML JavaScript Tailwind WebHID API
+Tech used: HTML JavaScript Tailwind WebHID-API
 
 ## Optimizations
 
